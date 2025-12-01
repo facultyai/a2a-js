@@ -8,6 +8,8 @@ import {
   Task,
   AgentCard,
   GetTaskPushNotificationConfigParams,
+  ListTasksParams,
+  ListTasksResult,
 } from '../../types.js';
 import { A2AStreamEventData, SendMessageResult } from '../client.js';
 import { RequestOptions } from '../multitransport-client.js';
@@ -34,6 +36,8 @@ export interface Transport {
     params: ListTaskPushNotificationConfigParams,
     options?: RequestOptions
   ): Promise<TaskPushNotificationConfig[]>;
+
+  listTasks(params: ListTasksParams, options?: RequestOptions): Promise<ListTasksResult>;
 
   deleteTaskPushNotificationConfig(
     params: DeleteTaskPushNotificationConfigParams,

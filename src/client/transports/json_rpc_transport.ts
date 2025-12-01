@@ -28,6 +28,9 @@ import {
   CancelTaskSuccessResponse,
   AgentCard,
   GetTaskPushNotificationConfigParams,
+  ListTasksParams,
+  ListTasksSuccessResponse,
+  ListTasksResult,
 } from '../../types.js';
 import { A2AStreamEventData, SendMessageResult } from '../client.js';
 import { RequestOptions } from '../multitransport-client.js';
@@ -114,6 +117,20 @@ export class JsonRpcTransport implements Transport {
       DeleteTaskPushNotificationConfigParams,
       DeleteTaskPushNotificationConfigResponse
     >('tasks/pushNotificationConfig/delete', params, idOverride, options);
+  }
+
+  async listTasks(
+    params: ListTasksParams,
+    options?: RequestOptions,
+    idOverride?: number
+  ): Promise<ListTasksResult> {
+    const rpcResponse = await this._sendRpcRequest<ListTasksParams, ListTasksSuccessResponse>(
+      'tasks/list',
+      params,
+      idOverride,
+      options
+    );
+    return rpcResponse.result;
   }
 
   async getTask(

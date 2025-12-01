@@ -9,6 +9,8 @@ import {
   TaskQueryParams,
   PushNotificationConfig,
   AgentCard,
+  ListTasksParams,
+  ListTasksResult,
 } from '../types.js';
 import { A2AStreamEventData, SendMessageResult } from './client.js';
 import {
@@ -193,6 +195,10 @@ export class Client {
       options,
       this.transport.deleteTaskPushNotificationConfig.bind(this.transport)
     );
+  }
+
+  listTasks(params: ListTasksParams, options?: RequestOptions): Promise<ListTasksResult> {
+    return this.transport.listTasks(params, options);
   }
 
   /**

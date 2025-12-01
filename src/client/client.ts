@@ -20,6 +20,8 @@ import {
   TaskStatusUpdateEvent,
   A2ARequest,
   JSONRPCErrorResponse,
+  ListTasksParams,
+  ListTasksResponse,
 } from '../types.js'; // Assuming schema.ts is in the same directory or appropriately pathed
 import { AGENT_CARD_PATH } from '../constants.js';
 import { JsonRpcTransport } from './transports/json_rpc_transport.js';
@@ -242,6 +244,13 @@ export class A2AClient {
       DeleteTaskPushNotificationConfigParams,
       DeleteTaskPushNotificationConfigResponse
     >((t, p, id) => t.deleteTaskPushNotificationConfig(p, A2AClient.emptyOptions, id), params);
+  }
+
+  public async listTasks(params: ListTasksParams): Promise<ListTasksResponse> {
+    return await this.invokeJsonRpc(
+      (t, p, id) => t.listTasks(p, A2AClient.emptyOptions, id),
+      params
+    );
   }
 
   /**
@@ -476,7 +485,11 @@ function extractJSONRPCError(error: unknown): JSONRPCErrorResponse {
 }
 
 // Utility unexported types to properly factor out common "compatibility" logic via invokeJsonRpc.
-type ParamsOf<T> = T extends { params: unknown } ? T['params'] : undefined;
+type ParamsOf<T> = T extends { params: unknown }
+  ? T['params']
+  : T extends { params?: unknown }
+    ? T['params']
+    : undefined;
 type ResultOf<T> = T extends { result: unknown } ? T['result'] : void;
 type JsonRpcParams = ParamsOf<A2ARequest>;
 type JsonRpcCaller<TParams extends JsonRpcParams, TResponse extends JSONRPCResponse> = (

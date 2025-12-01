@@ -15,6 +15,8 @@ import {
   TaskStatusUpdateEvent,
   AgentCard,
   GetTaskPushNotificationConfigParams,
+  ListTasksParams,
+  ListTasksResult,
 } from '../../src/types.js';
 import { A2AStreamEventData } from '../../src/client/client.js';
 
@@ -31,6 +33,7 @@ describe('Client', () => {
       getTaskPushNotificationConfig: sinon.stub(),
       listTaskPushNotificationConfig: sinon.stub(),
       deleteTaskPushNotificationConfig: sinon.stub(),
+      listTasks: sinon.stub(),
       getTask: sinon.stub(),
       cancelTask: sinon.stub(),
       resubscribeTask: sinon.stub(),
@@ -177,6 +180,22 @@ describe('Client', () => {
 
     expect(transport.deleteTaskPushNotificationConfig.calledOn(transport)).to.be.true;
     expect(transport.deleteTaskPushNotificationConfig.calledOnceWith(params)).to.be.true;
+  });
+
+  it('shoudl call transport.listTasks', async () => {
+    const params: ListTasksParams = { pageSize: 10, pageToken: '123' };
+    const task: ListTasksResult = {
+      tasks: [],
+      totalSize: 0,
+      nextPageToken: '456',
+      pageSize: 10,
+    };
+    transport.listTasks.resolves(task);
+
+    const result = await client.listTasks(params);
+
+    expect(transport.listTasks.calledOnceWith(params)).to.be.true;
+    expect(result).to.equal(result);
   });
 
   it('should call transport.getTask', async () => {

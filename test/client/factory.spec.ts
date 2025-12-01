@@ -20,6 +20,7 @@ describe('ClientFactory', () => {
       getTaskPushNotificationConfig: sinon.stub(),
       listTaskPushNotificationConfig: sinon.stub(),
       deleteTaskPushNotificationConfig: sinon.stub(),
+      listTasks: sinon.stub(),
       getTask: sinon.stub(),
       cancelTask: sinon.stub(),
       resubscribeTask: sinon.stub(),
