@@ -14,6 +14,8 @@ import {
   DeleteTaskPushNotificationConfigParams,
   GetTaskPushNotificationConfigParams,
   ListTaskPushNotificationConfigParams,
+  ListTasksParams,
+  ListTasksResult,
 } from '../../types.js';
 import { AgentExecutor } from '../agent_execution/agent_executor.js';
 import { RequestContext } from '../agent_execution/request_context.js';
@@ -34,6 +36,7 @@ import {
 import { PushNotificationSender } from '../push_notification/push_notification_sender.js';
 import { DefaultPushNotificationSender } from '../push_notification/default_push_notification_sender.js';
 import { ServerCallContext } from '../context.js';
+import { isValidUnixTimestampMs } from '../utils.js';
 
 const terminalStates: TaskState[] = ['completed', 'failed', 'canceled', 'rejected'];
 
@@ -390,6 +393,36 @@ export class DefaultRequestHandler implements A2ARequestHandler {
       task.history = [];
     }
     return task;
+  }
+
+  async listTasks(params: ListTasksParams, _context?: ServerCallContext): Promise<ListTasksResult> {
+    if (!this.paramsTasksListAreValid(params)) {
+      throw A2AError.invalidParams(`Invalid method parameters.`);
+    }
+    return this.taskStore.list(params);
+  }
+
+  private paramsTasksListAreValid(params: ListTasksParams): boolean {
+    if (params.pageSize !== undefined && (params.pageSize > 100 || params.pageSize < 1)) {
+      return false;
+    }
+    if (
+      params.pageToken !== undefined &&
+      Buffer.from(params.pageToken, 'base64').toString('base64') !== params.pageToken
+    ) {
+      return false;
+    }
+    if (params.historyLength !== undefined && params.historyLength < 0) {
+      return false;
+    }
+    if (params.lastUpdatedAfter !== undefined && !isValidUnixTimestampMs(params.lastUpdatedAfter)) {
+      return false;
+    }
+    const terminalStates: string[] = ['completed', 'failed', 'canceled', 'rejected'];
+    if (params.status !== undefined && !terminalStates.includes(params.status)) {
+      return false;
+    }
+    return true;
   }
 
   async cancelTask(params: TaskIdParams, _context?: ServerCallContext): Promise<Task> {

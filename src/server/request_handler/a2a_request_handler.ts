@@ -11,6 +11,8 @@ import {
   GetTaskPushNotificationConfigParams,
   ListTaskPushNotificationConfigParams,
   DeleteTaskPushNotificationConfigParams,
+  ListTasksParams,
+  ListTasksResult,
 } from '../../types.js';
 import { ServerCallContext } from '../context.js';
 
@@ -32,6 +34,7 @@ export interface A2ARequestHandler {
 
   getTask(params: TaskQueryParams, context?: ServerCallContext): Promise<Task>;
   cancelTask(params: TaskIdParams, context?: ServerCallContext): Promise<Task>;
+  listTasks(params: ListTasksParams, context?: ServerCallContext): Promise<ListTasksResult>;
 
   setTaskPushNotificationConfig(
     params: TaskPushNotificationConfig,

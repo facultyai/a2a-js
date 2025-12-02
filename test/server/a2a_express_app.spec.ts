@@ -49,6 +49,7 @@ describe('A2AExpressApp', () => {
       getAuthenticatedExtendedAgentCard: sinon.stub(),
       sendMessage: sinon.stub(),
       sendMessageStream: sinon.stub(),
+      listTasks: sinon.stub(),
       getTask: sinon.stub(),
       cancelTask: sinon.stub(),
       setTaskPushNotificationConfig: sinon.stub(),
